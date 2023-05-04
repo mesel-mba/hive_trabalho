@@ -7,6 +7,8 @@ services:
     hostname: namenode
     volumes:
       - ./data/hdfs/namenode:/hadoop/dfs/name
+      - ./data_files/:/data
+      - ./src/:/code
     environment:
       - CLUSTER_NAME=test
     env_file:
@@ -24,7 +26,7 @@ services:
     hostname: datanode
     volumes:
       - ./data/hdfs/datanode:/hadoop/dfs/data
-      #- ./data/hadoop/bank:/bank
+      - ./src/:/code
     env_file:
       - ./data/hadoop/hadoop-hive.env
     environment:
@@ -51,8 +53,6 @@ services:
       - "10000:10000"
     depends_on:
       - hive-metastore
-    volumes:
-      - ./data/teste:/teste
     deploy:
       resources:
         limits:
