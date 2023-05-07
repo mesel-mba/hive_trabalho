@@ -2,9 +2,9 @@
 
 # Cria estrutura de dados e realiza o load dos arquivos
 
-hdfs dfs -mkdir /app
-hdfs dfs -mkdir /app/data
-hdfs dfs -put /data/* /app/data/
+docker compose exec -it namenode bash -c "hdfs dfs -mkdir /app"
+docker compose exec -it namenode bash -c "hdfs dfs -mkdir /app/data"
+docker compose exec -it namenode bash -c "hdfs dfs -put /data/* /app/data/"
 
 # Roda criação de scripts de criação de tabela
 
