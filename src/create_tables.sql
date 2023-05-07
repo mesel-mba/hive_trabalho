@@ -136,31 +136,57 @@ CREATE EXTERNAL TABLE IF NOT EXISTS sales_order_head
 ) ROW FORMAT DELIMITED FIELDS TERMINATED BY ';' STORED AS TEXTFILE LOCATION '/app/data/sales_order_head/'
 TBLPROPERTIES ("skip.header.line.count"="1");
 
--- PARTITIONED TABLE
+-- FLATTENED AND PARTITIONED TABLE WITH KPIS
+
+CREATE TABLE product_sales (
+    customerid string,
+    title string,
+    suffix string,
+    companyname string,
+    salesperson string,
+    salesorderid string,
+    orderqty string,
+    unitprice string,
+    unitpricediscount string,
+    productid string,
+    listprice string,
+    productcategoryid string,
+    productmodelid string,
+    sellstartdate string,
+    sellenddate string,
+    a_city string,
+    a_postalcode string,
+    a2_city string,
+    a2_postalcode string
+) PARTITIONED BY(orderdate string)
+ROW format delimited fields terminated BY ';'
+location '/app/data/flattentable/';
+
 insert into table product_sales PARTITION (orderdate="01-06-2008")
 SELECT
-    p.productcategoryid,
-    sod.orderqty,
---    soh.orderdate,
-    c.salesperson,
-    c.companyname,
-    a.addressline1,
-    a.city
-FROM
-    product p
-JOIN sales_order_detail sod 
-ON
-    sod.productid = p.productid
-JOIN sales_order_head soh 
-ON
-    soh.salesorderid = sod.salesorderid
-JOIN customer c 
-ON
-    soh.customerid = c.customerid
-JOIN customer_address ca 
-ON
-    c.customerid = ca.customerid
-JOIN address a 
-ON
-    ca.addressid = a.addressid
-ORDER BY city;
+    c.customerid as customerid,
+    c.title as title,
+    c.suffix as suffix,
+    c.companyname as companyname,
+    c.salesperson as salesperson,
+    sod.salesorderid as salesorderid,
+    sod.orderqty as orderqty,
+    sod.unitprice as unitprice,
+    sod.unitpricediscount as unitpricediscount,
+    soh.orderdate as orderdate,
+    p.productid as productid,
+    p.listprice as listprice,
+    p.productcategoryid as productcategoryid,
+    p.productmodelid as productmodelid,
+    p.sellstartdate as sellstartdate,
+    p.sellenddate as sellenddate,
+    a.city as a_city,
+    a.postalcode as a_postalcode,
+    a2.city as a2_city,
+    a2.postalcode as a2_postalcode
+    FROM sales_order_head soh
+join customer c on c.customerid = soh.customerid
+join sales_order_detail sod on sod.salesorderid = soh.salesorderid
+join product p on p.productid = sod.productid
+join address a on soh.billtoaddressid = a.addressid
+join address a2 on soh.shiptoaddressid = a2.addressid
