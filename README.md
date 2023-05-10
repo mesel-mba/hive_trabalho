@@ -40,3 +40,10 @@ O script **create_tables.sql** mantém também a Flattened table, onde a técnic
 A coluna selecionada para a partição é `orderdate`. Tais ações foram escolhidas visando uma melhor análise dos dados e estudo dos clientes por data.
 
 Como uma forma de otimizarmos custo computacional, vamos utilizar a mesma flattened table, que agrega vendas por cliente e produto, para a geração de KPIs sobre vendas e desempenho da empresa (EBIT, EBITDA, P&L, GMV e etc).
+
+## Problemas no problema e dataset
+
+Dentro do dataset tivemos alguns problemas como:
+
+ - DER não sendo totalmente fiel aos arquivos CSV disponibilizados: tabelas não existentes ou campos que não representam a realidade
+ - Falta de granularidade de dados (existiam apenas dados de uma data)
